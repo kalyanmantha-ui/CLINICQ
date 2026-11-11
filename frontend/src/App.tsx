@@ -5,6 +5,7 @@ import { Login, Register } from './pages/auth';
 import { FindDoctor, DoctorSlots, PatientHome, ProfilePage } from './pages/patient';
 import { DoctorDay, PatientRecordPage, ReceptionDay, ReceptionQueue } from './pages/staff';
 import { AdminAudit, AdminSlots, AdminUsers } from './pages/admin';
+import { Button } from './ui';
 
 const HOME: Record<Role, string> = { PATIENT: '/home', RECEPTIONIST: '/reception', DOCTOR: '/doctor', ADMIN: '/admin' };
 const NAV: Record<Role, [string, string][]> = {
@@ -20,6 +21,7 @@ function Shell() {
   if (!session) return <Navigate to="/login" replace />;
   return (
     <>
+      <a className="skip" href="#main">Skip to main content</a>
       <header className="topbar">
         <strong className="brand"><span className="mark" aria-hidden="true" />ClinicQ</strong>
         <nav aria-label="Main">
@@ -28,9 +30,9 @@ function Shell() {
           ))}
         </nav>
         <span className="who">{session.fullName} · {session.role.toLowerCase()}</span>
-        <button className="link" onClick={logout}>Sign out</button>
+        <Button variant="link" onClick={logout}>Sign out</Button>
       </header>
-      <main key={pathname}><Outlet /></main>
+      <main id="main" tabIndex={-1} key={pathname}><Outlet /></main>
     </>
   );
 }

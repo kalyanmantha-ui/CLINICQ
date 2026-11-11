@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { errText, RETURN_KEY } from '../api';
 import { useAuth } from '../auth';
+import { Button, Notice, TextField } from '../ui';
 
 const DEMO = [
   ['Patient', 'patient@clinicq.demo'],
@@ -42,10 +43,10 @@ export function Login() {
       <h2 style={{ marginTop: 0 }}>Sign in</h2>
       {expired && <p className="info">You were signed out after a period of inactivity. Sign in to pick up where you left off.</p>}
       <form onSubmit={submit} className="card stack">
-        <label>Email<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="username" /></label>
-        <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" /></label>
-        {error && <p role="alert" className="error">{error}</p>}
-        <button className="primary" disabled={busy}>Sign in</button>
+        <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="username" />
+        <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+        {error && <Notice kind="error">{error}</Notice>}
+        <Button variant="primary" busy={busy}>Sign in</Button>
         <p className="muted">New patient? <Link to="/register">Create an account</Link></p>
       </form>
       <section className="card stack" aria-label="Demo accounts">
@@ -53,7 +54,7 @@ export function Login() {
         <p className="muted">One click signs you in as each role and shows what that role can see.</p>
         <div className="row wrap">
           {DEMO.map(([label, em]) => (
-            <button key={em} onClick={() => submit(undefined, em, DEMO_PASSWORD)} disabled={busy}>{label}</button>
+            <Button key={em} type="button" onClick={() => submit(undefined, em, DEMO_PASSWORD)} disabled={busy}>{label}</Button>
           ))}
         </div>
       </section>
@@ -77,11 +78,11 @@ export function Register() {
     <div className="auth">
       <h1>Create your account</h1>
       <form onSubmit={submit} className="card stack">
-        <label>Full name<input value={f.fullName} onChange={(e) => setF({ ...f, fullName: e.target.value })} required maxLength={100} /></label>
-        <label>Email<input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} required /></label>
-        <label>Password (8+ characters)<input type="password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} required minLength={8} autoComplete="new-password" /></label>
-        {error && <p role="alert" className="error">{error}</p>}
-        <button className="primary" disabled={busy}>Create account</button>
+        <TextField label="Full name" value={f.fullName} onChange={(e) => setF({ ...f, fullName: e.target.value })} required maxLength={100} autoComplete="name" />
+        <TextField label="Email" type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} required autoComplete="email" />
+        <TextField label="Password (8+ characters)" type="password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} required minLength={8} autoComplete="new-password" />
+        {error && <Notice kind="error">{error}</Notice>}
+        <Button variant="primary" busy={busy}>Create account</Button>
         <p className="muted">Already registered? <Link to="/login">Sign in</Link></p>
       </form>
     </div>

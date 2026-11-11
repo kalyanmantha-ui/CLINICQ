@@ -96,3 +96,14 @@ export const fmtDay = (iso: string) => new Date(iso).toLocaleDateString('en-US',
 export const fmtFull = (iso: string) => `${fmtDay(iso)} · ${fmtTime(iso)}`;
 export const dayKey = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: TZ });
 export const todayKey = () => new Date().toLocaleDateString('en-CA', { timeZone: TZ });
+
+/** Minutes since midnight, clinic time, for an instant. Used to place appointments on the day grid. */
+const hm = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', minute: 'numeric', hourCycle: 'h23' });
+export const clinicMinutes = (iso: string) => {
+  const parts = hm.formatToParts(new Date(iso));
+  const n = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  return (n('hour') % 24) * 60 + n('minute');
+};
+export const fmtWeekday = (iso: string) => new Date(iso).toLocaleDateString('en-US', { timeZone: TZ, weekday: 'short' });
+export const fmtDayNumber = (iso: string) => new Date(iso).toLocaleDateString('en-US', { timeZone: TZ, day: 'numeric' });
+export const fmtMonthDay = (iso: string) => new Date(iso).toLocaleDateString('en-US', { timeZone: TZ, month: 'long', day: 'numeric' });

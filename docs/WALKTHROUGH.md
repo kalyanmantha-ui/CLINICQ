@@ -330,7 +330,9 @@ React 18 + TypeScript, built with Vite, served by nginx in production.
 src/main.tsx, App.tsx    Routes, one <Guard role=...> per protected route
 src/auth.tsx             Session state, sliding renewal, activity tracking
 src/api.ts               One fetch wrapper; 401 sends you to sign-in and remembers where you were
-src/hooks.ts             useLoad(fn, deps, pollMs): fetch + loading/error + optional polling
+src/hooks.ts             useLoad(fn, deps, pollMs): fetch + loading/error + polling that pauses in hidden tabs + optimistic mutate
+src/ui/                  Component library: Button, Field, Pill, Toast, ConfirmAction, DataTable, OfferTicket, DayGrid, SlotPicker ...
+                         (each has a Storybook story and a Vitest + axe test)
 src/pages/auth.tsx       Sign-in, register, demo-account buttons, "you were signed out" notice
 src/pages/patient.tsx    My care (offer ticket, upcoming, waitlist), find a doctor, book, my details
 src/pages/staff.tsx      Reception day, reception waitlist, doctor's day, patient record
@@ -339,6 +341,9 @@ src/pages/admin.tsx      Users, create slots, audit log
 
 Things worth knowing:
 
+- **Calendar and slot picker.** `DayGrid` turns the clock into pixels: a block's `top` is its start minute minus the first visible hour, its height is its length, all in clinic (Pacific) time whatever the browser's zone. `SlotPicker` groups open times by day then morning, afternoon, evening.
+- **Optimistic updates.** Cancel, accept and decline change the screen first and reload afterwards; if the server refuses, the change is rolled back and the reason is shown.
+- **Accessibility is tested, not claimed.** Each component has an axe check in Vitest, and a Playwright scan runs axe (WCAG 2.1 AA, including colour contrast) over the real pages. That scan found real problems (low-contrast decorative text, a label that did not match its visible text) which are fixed.
 - **Polling, not websockets.** The patient page re-checks for offers every 5 seconds, appointments and waitlist every 15, and the admin audit log every 10. Simple, and fine at clinic scale. Server push would be the upgrade.
 - **Session renewal** listens for pointer, key, touch and scroll events and only renews if the person was active in the last 10 minutes.
 - **Idempotency keys** are generated when a slot is picked, so a double-click or a retry reuses the same key.

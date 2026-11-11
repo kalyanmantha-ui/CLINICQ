@@ -74,7 +74,9 @@ The login page has one-click buttons for each.
 |---|---|---|
 | Unit | field encryption (round trip, tamper, wrong key) | 6 |
 | API integration (real Postgres, real HTTP) | booking/roles, waitlist + expiry + concurrent accepts, privacy, admin, reminders across 2 instances | 80+ checks |
-| Browser end-to-end (Playwright) | book, waitlist, reception cancel, offer accepted, doctor record, audit, role guards | 5 |
+| Frontend components (Vitest + Testing Library + axe) | every UI component: behaviour, keyboard use, accessibility; time-zone and polling helpers | 48 |
+| Browser end-to-end (Playwright) | book, waitlist, reception cancel, offer accepted, calendar view, doctor record, audit, role guards | 6 |
+| Browser accessibility (axe-core, WCAG 2.1 AA) | sign-in, patient, staff calendar and list, admin pages, keyboard-only use | 5 |
 | Load | 1,000 simultaneous bookings on 50 slots, 3 versions | see above |
 
 `scripts/test-all.sh [--load]` runs everything against a fresh database. It assumes a local Postgres superuser `postgres`
@@ -86,6 +88,17 @@ on :5432, a `clinicq` role, and the Mailpit binary; on my machine these live in 
 `POST /api/waitlist`, `GET /mine`, `DELETE /{id}` · `GET /api/offers/mine`, `POST /{id}/accept|decline` · `GET|PUT /api/patients/me` ·
 `GET /api/reception/{schedule,waitlist}` · `GET /api/doctor/schedule`, `/appointments/{id}/record`, `PUT .../notes`, `POST .../complete` ·
 `/api/admin/{users,slots,audit}`.
+
+## The frontend
+
+The interface is a small typed component library (`frontend/src/ui`) with every component shown in Storybook (`npm run storybook`), designed first in Figma.
+
+- **Calendar for staff.** Reception and doctors see the day as a time grid, one column per doctor, each appointment sized by its length. Click a block for details and actions; a list view is one toggle away and is the default on phones.
+- **A quick, calm booking flow.** Patients pick a day from a strip that shows how many times are open, then a time. Changes show up instantly and roll back with a clear message if the server says no.
+- **Offers feel live.** A held slot is a ticket with a countdown ring for the 15 minutes. Screens refresh on a timer (offers every 5 seconds) and pause while the tab is hidden. This is polling, not websockets.
+- **Accessible by default.** Skip link, labelled controls, keyboard-operable calendar and radio toggle, focus moves to confirmations, status messages announced politely, and colour is never the only signal. Component tests and a browser scan with axe-core check this on every run.
+
+Run the frontend checks: `cd frontend && npm test` (components), `npm run storybook`, `npm run test:e2e` (needs the API running; `scripts/e2e.sh` does it all). CI runs typecheck, component tests, the build and the Storybook build on every push.
 
 ## Known limitations (what I'd do next)
 

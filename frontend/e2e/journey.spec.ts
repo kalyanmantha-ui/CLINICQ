@@ -3,6 +3,7 @@ import { expect, test, type Browser, type Page } from '@playwright/test';
 const TZ = 'America/Los_Angeles';
 const tomorrow = new Date(Date.now() + 86_400_000).toLocaleDateString('en-CA', { timeZone: TZ });
 const newUser = async (browser: Browser) => (await browser.newContext()).newPage();
+const listView = (page: Page) => page.getByRole('radio', { name: 'List' }).click();
 const demo = async (page: Page, who: 'Patient' | 'Receptionist' | 'Doctor' | 'Admin') => {
   await page.goto('/login');
   await page.getByRole('button', { name: who, exact: true }).click();
@@ -42,6 +43,7 @@ test.describe.serial('ClinicQ end-to-end', () => {
     const rec = await newUser(browser);
     await demo(rec, 'Receptionist');
     await rec.getByLabel('Date').fill(tomorrow);
+    await listView(rec);
     const row = rec.getByTestId('schedule-row').filter({ hasText: 'Pat Patient' });
     await expect(row).toHaveCount(1);
     await row.getByRole('button', { name: 'Cancel' }).click();
@@ -58,6 +60,28 @@ test.describe.serial('ClinicQ end-to-end', () => {
     await expect(p1.getByText('No upcoming appointments.')).toBeVisible();
   });
 
+  test('calendar view: staff pick a block to see details, and the doctor opens the record from it', async ({ browser }) => {
+    const rec = await newUser(browser);
+    await demo(rec, 'Receptionist');
+    await rec.getByLabel('Date').fill(tomorrow);
+    await expect(rec.getByRole('radio', { name: 'Calendar' })).toBeChecked();
+    const block = rec.getByRole('button', { name: /Wendy Waiting/ });
+    await expect(block).toHaveCount(1);
+    await block.click();
+    const detail = rec.getByTestId('appointment-detail');
+    await expect(detail).toContainText('Wendy Waiting');
+    await expect(detail.getByRole('button', { name: 'Cancel appointment' })).toBeVisible();
+    await block.click();
+    await expect(detail).toHaveCount(0);
+
+    const doc = await newUser(browser);
+    await demo(doc, 'Doctor');
+    await doc.getByLabel('Date').fill(tomorrow);
+    await doc.getByRole('button', { name: /Wendy Waiting/ }).click();
+    await doc.getByRole('link', { name: 'Open record' }).click();
+    await expect(doc.getByRole('heading', { name: /Wendy Waiting/ })).toBeVisible();
+  });
+
   test('doctor opens the record, saves notes and completes the visit', async ({ browser }) => {
     await p2.getByRole('link', { name: 'My details' }).click();
     await p2.getByLabel('Phone').fill('415-555-0199');
@@ -68,6 +92,7 @@ test.describe.serial('ClinicQ end-to-end', () => {
     const doc = await newUser(browser);
     await demo(doc, 'Doctor');
     await doc.getByLabel('Date').fill(tomorrow);
+    await listView(doc);
     await doc.getByTestId('doctor-row').filter({ hasText: 'Wendy Waiting' }).click();
     await expect(doc.getByText('415-555-0199')).toBeVisible();
     await doc.getByLabel('Notes', { exact: true }).fill('Follow up in two weeks');
