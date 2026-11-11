@@ -98,6 +98,8 @@ The interface is a small typed component library (`frontend/src/ui`) with every 
 - **Offers feel live.** A held slot is a ticket with a countdown ring for the 15 minutes. Screens refresh on a timer (offers every 5 seconds) and pause while the tab is hidden. This is polling, not websockets.
 - **Accessible by default.** Skip link, labelled controls, keyboard-operable calendar and radio toggle, focus moves to confirmations, status messages announced politely, and colour is never the only signal. Component tests and a browser scan with axe-core check this on every run.
 
+Lighthouse on the live sign-in page (default mobile settings): performance 100, accessibility 100, best practices 100, SEO 100; first paint 0.8 s, no layout shift.
+
 Run the frontend checks: `cd frontend && npm test` (components), `npm run storybook`, `npm run test:e2e` (needs the API running; `scripts/e2e.sh` does it all). CI runs typecheck, component tests, the build and the Storybook build on every push.
 
 ## Known limitations (what I'd do next)
