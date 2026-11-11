@@ -1,0 +1,15 @@
+target/
+node_modules/
+dist/
+.env
+.idea/
+.vscode/
+*.log
+.DS_Store
+.tools/
+.runner/
+frontend/test-results/
+frontend/playwright-report/
+
+# local helper for the dev runner
+start-runner.command

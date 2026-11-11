@@ -1,0 +1,31 @@
+const BASE = 'http://localhost:8080';
+let fails = 0;
+const ok = (n, c, x = '') => { console.log(`${c ? 'PASS' : 'FAIL'}  ${n} ${x}`); if (!c) fails++; };
+const call = async (method, path, { token, body } = {}) => {
+  const r = await fetch(BASE + path, { method, headers: { 'Content-Type': 'application/json', ...(token && { Authorization: `Bearer ${token}` }) }, body: body && JSON.stringify(body) });
+  let json = null; try { json = await r.json(); } catch {}
+  return { status: r.status, json };
+};
+const login = async (e, p = 'Demo#2026!') => (await call('POST', '/api/auth/login', { body: { email: e, password: p } })).json?.token;
+const admin = await login('admin@clinicq.demo'), recep = await login('reception@clinicq.demo');
+const tag = Date.now();
+const mk = (role, extra = {}) => call('POST', '/api/admin/users', { token: admin, body: { email: `s${role}${tag}@clinic.dev`, password: 'Staff#Pass12', fullName: `Staff ${role}`, role, ...extra } });
+ok('receptionist cannot create users -> 403', (await call('POST', '/api/admin/users', { token: recep, body: { email: 'x@y.dev', password: 'Staff#Pass12', fullName: 'X', role: 'ADMIN' } })).status === 403);
+ok('admin cannot create a patient this way -> 400', (await mk('PATIENT')).status === 400);
+ok('doctor needs a specialty -> 400', (await mk('DOCTOR')).status === 400);
+const doc = await mk('DOCTOR', { specialty: 'Dermatology' });
+ok('admin creates a doctor -> 201', doc.status === 201);
+ok('new doctor can log in', !!(await login(`sDOCTOR${tag}@clinic.dev`, 'Staff#Pass12')));
+ok('new doctor appears in /api/doctors', (await call('GET', '/api/doctors', { token: admin })).json.some((d) => d.id === doc.json.id && d.specialty === 'Dermatology'));
+const day = new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
+const g1 = await call('POST', '/api/admin/slots', { token: admin, body: { doctorId: doc.json.id, date: day, startHour: 9, endHour: 12, minutes: 30 } });
+ok('generates 6 slots for 9:00-12:00 @30min', g1.status === 201 && g1.json.created === 6, JSON.stringify(g1.json));
+const g2 = await call('POST', '/api/admin/slots', { token: admin, body: { doctorId: doc.json.id, date: day, startHour: 9, endHour: 12, minutes: 30 } });
+ok('running it again creates nothing (no duplicates)', g2.json.created === 0);
+ok('end before start -> 400', (await call('POST', '/api/admin/slots', { token: admin, body: { doctorId: doc.json.id, date: day, startHour: 12, endHour: 9, minutes: 30 } })).status === 400);
+ok('admin disables the doctor -> 204', (await call('PATCH', `/api/admin/users/${doc.json.id}`, { token: admin, body: { enabled: false } })).status === 204);
+ok('disabled user can no longer log in', !(await login(`sDOCTOR${tag}@clinic.dev`, 'Staff#Pass12')));
+const me = (await call('GET', '/api/admin/users', { token: admin })).json.find((u) => u.email === 'admin@clinicq.demo');
+ok('admin cannot disable themselves -> 400', (await call('PATCH', `/api/admin/users/${me.id}`, { token: admin, body: { enabled: false } })).status === 400);
+console.log(fails ? `\n${fails} FAILED` : '\nALL PASSED');
+process.exit(fails ? 1 : 0);

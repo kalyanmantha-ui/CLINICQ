@@ -1,0 +1,31 @@
+# Active with SPRING_PROFILES_ACTIVE=prod. There are deliberately NO defaults for secrets:
+# the app refuses to start unless they are provided, so a deploy can never silently run on dev keys.
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USER:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${MAIL_AUTH:true}
+      mail.smtp.starttls.enable: ${MAIL_STARTTLS:true}
+
+clinicq:
+  jwt:
+    secret: ${JWT_SECRET}            # >= 32 bytes
+  crypto:
+    key: ${FIELD_ENCRYPTION_KEY}     # base64 of 32 random bytes: openssl rand -base64 32
+  booking:
+    mode: locked                     # the naive mode is never allowed in prod
+  reminders:
+    from: ${MAIL_FROM}
+
+server:
+  forward-headers-strategy: framework   # behind Caddy/nginx
+  error:
+    include-message: never
+    include-stacktrace: never

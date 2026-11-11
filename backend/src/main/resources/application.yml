@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/clinicq}
+    username: ${DB_USER:clinicq}
+    password: ${DB_PASSWORD:clinicq}
+  jpa:
+    hibernate:
+      ddl-auto: validate        # Flyway owns the schema; Hibernate only validates it
+    open-in-view: false
+  flyway:
+    enabled: true
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    properties:
+      mail.smtp.connectiontimeout: 3000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+management:
+  health:
+    mail:
+      enabled: false            # SMTP being down must not mark the API unhealthy
+
+clinicq:
+  booking:
+    mode: ${BOOKING_MODE:locked}   # "naive" exists only to reproduce the double-booking bug in load tests
+  seed:
+    enabled: ${SEED_DEMO:false}
+  security:
+    bcrypt-strength: ${BCRYPT_STRENGTH:10}
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
+    max-session-hours: ${JWT_MAX_SESSION_HOURS:12}
+    access-minutes: 15
+  crypto:
+    key: ${FIELD_ENCRYPTION_KEY:}   # base64 32-byte key; required outside tests
+  reminders:
+    sweep-ms: ${REMINDERS_SWEEP_MS:60000}
+    from: ${MAIL_FROM:no-reply@clinicq.demo}
+  offers:
+    expiry-seconds: ${OFFERS_EXPIRY_SECONDS:900}   # 15 minutes
+    sweep-ms: ${OFFERS_SWEEP_MS:15000}
+
+logging:
+  level:
+    root: INFO
+    com.clinicq: INFO

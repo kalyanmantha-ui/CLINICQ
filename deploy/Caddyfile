@@ -1,0 +1,6 @@
+# SITE_ADDRESS=:80 serves plain HTTP (first boot / IP only).
+# SITE_ADDRESS=clinicq.example.com gets a free Let's Encrypt certificate automatically.
+{$SITE_ADDRESS::80} {
+  encode gzip
+  reverse_proxy web:80
+}

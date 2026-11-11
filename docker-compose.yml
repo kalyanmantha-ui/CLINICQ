@@ -1,0 +1,26 @@
+# Local development services. Dev-only credentials; never reuse in production.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: clinicq
+      POSTGRES_USER: clinicq
+      POSTGRES_PASSWORD: clinicq
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinicq -d clinicq"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # web UI + API
+
+volumes:
+  pgdata:

@@ -1,0 +1,74 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-11-10T20:09:08.947-08:00  INFO 24165 --- [           main] com.clinicq.ClinicQApplication           : Starting ClinicQApplication v0.1.0 using Java 22.0.2 with PID 24165 (/Users/kalyanmantha/Desktop/ClinicQ/backend/target/clinicq-api-0.1.0.jar started by kalyanmantha in /Users/kalyanmantha/Desktop/ClinicQ/backend)
+2026-11-10T20:09:08.948-08:00  INFO 24165 --- [           main] com.clinicq.ClinicQApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-11-10T20:09:09.499-08:00  INFO 24165 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-10T20:09:09.528-08:00  INFO 24165 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 25 ms. Found 4 JPA repository interfaces.
+2026-11-10T20:09:09.983-08:00  INFO 24165 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-11-10T20:09:09.991-08:00  INFO 24165 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-10T20:09:09.991-08:00  INFO 24165 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-11-10T20:09:10.008-08:00  INFO 24165 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-10T20:09:10.008-08:00  INFO 24165 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1038 ms
+2026-11-10T20:09:10.245-08:00  INFO 24165 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-10T20:09:10.321-08:00  INFO 24165 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e06ec83
+2026-11-10T20:09:10.322-08:00  INFO 24165 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-10T20:09:10.338-08:00  INFO 24165 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/clinicq_load (PostgreSQL 16.15)
+2026-11-10T20:09:10.356-08:00  INFO 24165 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-11-10T20:09:10.358-08:00  INFO 24165 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.009s)
+2026-11-10T20:09:10.365-08:00  INFO 24165 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-11-10T20:09:10.390-08:00  INFO 24165 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-11-10T20:09:10.401-08:00  INFO 24165 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - init schema"
+2026-11-10T20:09:10.428-08:00  INFO 24165 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - waitlist one active per doctor"
+2026-11-10T20:09:10.434-08:00  INFO 24165 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.021s)
+2026-11-10T20:09:10.487-08:00  INFO 24165 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-10T20:09:10.519-08:00  INFO 24165 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-11-10T20:09:10.537-08:00  INFO 24165 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-10T20:09:10.691-08:00  INFO 24165 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-10T20:09:11.170-08:00  INFO 24165 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-10T20:09:11.189-08:00  INFO 24165 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-10T20:09:11.203-08:00  WARN 24165 --- [           main] com.clinicq.security.FieldEncryptor      : FIELD_ENCRYPTION_KEY is not set: using the insecure development key. Set it for any shared or deployed environment.
+2026-11-10T20:09:11.455-08:00  INFO 24165 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-10T20:09:12.009-08:00  INFO 24165 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-11-10T20:09:12.292-08:00  INFO 24165 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-11-10T20:09:12.303-08:00  INFO 24165 --- [           main] com.clinicq.ClinicQApplication           : Started ClinicQApplication in 3.605 seconds (process running for 3.867)
+2026-11-10T20:09:12.529-08:00  INFO 24165 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-10T20:09:12.529-08:00  INFO 24165 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-10T20:09:12.529-08:00  INFO 24165 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-10T20:09:14.881-08:00  WARN 24165 --- [nio-8080-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.882-08:00 ERROR 24165 --- [nio-8080-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(9a8df38d-6507-4835-bc36-4505b6bb91f3) already exists.
+2026-11-10T20:09:14.898-08:00  WARN 24165 --- [io-8080-exec-34] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.898-08:00 ERROR 24165 --- [io-8080-exec-34] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(051725ff-549c-4fdf-b27a-3a8f225e5143) already exists.
+2026-11-10T20:09:14.903-08:00  WARN 24165 --- [io-8080-exec-33] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.904-08:00 ERROR 24165 --- [io-8080-exec-33] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(9b4be466-fe33-4325-bbbb-1dea148d9f04) already exists.
+2026-11-10T20:09:14.910-08:00  WARN 24165 --- [io-8080-exec-67] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.910-08:00 ERROR 24165 --- [io-8080-exec-67] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(35b9ff7f-837c-4848-a690-f5d88315762f) already exists.
+2026-11-10T20:09:14.919-08:00  WARN 24165 --- [io-8080-exec-17] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.919-08:00 ERROR 24165 --- [io-8080-exec-17] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(6b46ec11-bbde-4a0b-aaac-85904e7ec4ef) already exists.
+2026-11-10T20:09:14.932-08:00  WARN 24165 --- [o-8080-exec-110] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.932-08:00 ERROR 24165 --- [o-8080-exec-110] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(f941fb88-1614-45f2-843b-7503c0ef1911) already exists.
+2026-11-10T20:09:14.934-08:00  WARN 24165 --- [o-8080-exec-118] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.935-08:00 ERROR 24165 --- [o-8080-exec-118] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(78200a15-da0f-4adb-8e35-e625005b404b) already exists.
+2026-11-10T20:09:14.940-08:00  WARN 24165 --- [o-8080-exec-126] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:14.940-08:00 ERROR 24165 --- [o-8080-exec-126] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(17c5661f-9607-4c21-b12c-b72919d74ce8) already exists.
+2026-11-10T20:09:15.023-08:00  WARN 24165 --- [o-8080-exec-141] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23505
+2026-11-10T20:09:15.024-08:00 ERROR 24165 --- [o-8080-exec-141] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: duplicate key value violates unique constraint "ux_appointments_one_active_per_slot"
+  Detail: Key (slot_id)=(913cd546-f68c-4070-9461-9803425c9d6e) already exists.
+2026-11-10T20:09:16.963-08:00  INFO 24165 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-10T20:09:16.965-08:00  INFO 24165 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-11-10T20:09:16.971-08:00  INFO 24165 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

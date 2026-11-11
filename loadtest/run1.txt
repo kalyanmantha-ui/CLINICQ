@@ -1,0 +1,3 @@
+naive   | requests=1000 slots=50 | double-booked slots=13 extra bookings=15 | 0.7s | {'booked': 65, 'taken': 935}
+index   | requests=1000 slots=50 | double-booked slots=0 extra bookings=0 | 0.7s | {'booked': 50, 'rejected_by_index': 18, 'taken': 932}
+locked  | requests=1000 slots=50 | double-booked slots=0 extra bookings=0 | 0.8s | {'booked': 50, 'taken': 950}
