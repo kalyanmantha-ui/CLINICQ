@@ -13,3 +13,4 @@ frontend/playwright-report/
 
 # local helper for the dev runner
 start-runner.command
+*.tsbuildinfo

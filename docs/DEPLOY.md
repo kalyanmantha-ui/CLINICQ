@@ -1,27 +1,26 @@
 # Deploying ClinicQ to AWS (one EC2 instance)
 
-Status: **executed on a t3.small in us-west-2.** Cost is roughly one small instance (about $15/month for a t3.small).
+Status: **executed on a t3.small in us-west-2.** Cost is roughly $20/month while running and about $5/month while stopped (disk and the static IP).
 
 ## 1. Launch the instance
-- AMI: Amazon Linux 2023, type `t3.small` (2 GB RAM is enough for Postgres + the JVM + nginx).
+- AMI: Ubuntu Server 24.04 LTS, type `t3.small` (2 GB RAM is enough for Postgres + the JVM + nginx once swap is added).
 - Storage: 20 GB gp3.
-- Security group: allow inbound **80** and **443** from anywhere, **22** from your IP only. Do not open 5432 or 8080.
+- Security group: allow inbound **80** and **443** from anywhere, **22** from your IP only. Do not open 5432 or 8080 (and 8025 only to your own IP, see step 5).
 - Allocate an **Elastic IP** and attach it, so the address survives restarts.
 
-## 2. Install Docker
+## 2. Add swap and install Docker
 ```bash
-sudo dnf install -y docker git
-sudo systemctl enable --now docker
-sudo usermod -aG docker ec2-user && newgrp docker
-sudo mkdir -p /usr/local/lib/docker/cli-plugins
-sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
-  -o /usr/local/lib/docker/cli-plugins/docker-compose
-sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+ssh -i <key>.pem ubuntu@<elastic-ip>
+sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+curl -fsSL https://get.docker.com | sudo sh          # installs Docker Engine and the compose plugin
+sudo usermod -aG docker ubuntu                        # log out and back in, or prefix docker with sudo
 ```
+The swap file matters on 2 GB: without it the JVM and Postgres can be killed under load.
 
 ## 3. Configure and start
 ```bash
-git clone <your repo url> clinicq && cd clinicq
+git clone https://github.com/kalyanmantha-ui/CLINICQ.git && cd CLINICQ
 cp .env.example .env
 # fill in: DB_PASSWORD, JWT_SECRET (openssl rand -base64 48), FIELD_ENCRYPTION_KEY (openssl rand -base64 32)
 docker compose -f docker-compose.prod.yml --profile mailcatcher up -d --build
