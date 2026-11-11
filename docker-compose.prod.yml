@@ -35,7 +35,7 @@ services:
       MAIL_FROM: ${MAIL_FROM:-no-reply@clinicq.demo}
       SEED_DEMO: ${SEED_DEMO:-true}
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && printf 'GET /actuator/health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 12

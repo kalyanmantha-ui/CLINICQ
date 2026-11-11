@@ -1,6 +1,6 @@
 # Deploying ClinicQ to AWS (one EC2 instance)
 
-Status: **written, not yet executed.** Needs your AWS account. Cost is roughly one small instance (about $15/month for a t3.small).
+Status: **executed on a t3.small in us-west-2.** Cost is roughly one small instance (about $15/month for a t3.small).
 
 ## 1. Launch the instance
 - AMI: Amazon Linux 2023, type `t3.small` (2 GB RAM is enough for Postgres + the JVM + nginx).

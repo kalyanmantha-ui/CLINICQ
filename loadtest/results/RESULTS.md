@@ -19,3 +19,16 @@ The index-only and locked versions were 0 double-bookings in every run.
 - Caveats: client and server share one machine; Hikari pool is the default 10 connections.
 
 Reproduce: `loadtest/run-loadtest.sh`
+
+## Deployed run (EC2 t3.small)
+
+Same test against the production Docker images on the live server: 2 vCPU, 2 GB RAM (plus 2 GB swap), Postgres in a
+container, k6 in a container on the same Docker network, a separate throwaway database, `BOOKING_MODE=locked`.
+The demo API was stopped for the run so the two JVMs did not compete for memory.
+
+| 201 Created | 409 Rejected | Other statuses | Double-booked slots | Extra bookings | k6 wall time |
+|---|---|---|---|---|---|
+| 50 | 950 | 0 | **0** | **0** | 17 s |
+
+- Latency is high because 1,000 requests hit a 2 vCPU box at once: p95 about 5.2 s across the login and booking requests, median 270 ms.
+- One run only; the naive-mode comparison above was not repeated on this hardware.

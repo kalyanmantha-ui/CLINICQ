@@ -4,7 +4,7 @@ Scheduling for small clinics. Patients book appointments, staff run the day, and
 automatically offered to the next person on the waitlist.
 
 **Stack:** React + TypeScript (Vite) · Java 21 / Spring Boot 3 · PostgreSQL 16 · JWT auth · Flyway · Docker.
-**Live demo:** not deployed yet. `docs/DEPLOY.md` is the step-by-step for one AWS EC2 box.
+**Live demo:** https://clinicq.duckdns.org (one-click demo logins on the sign-in page). One AWS EC2 t3.small running the Docker Compose stack behind Caddy with a Let's Encrypt certificate; `docs/DEPLOY.md` is the step-by-step.
 
 ## The interesting problem: two people, one slot
 
@@ -18,7 +18,9 @@ I load tested booking with **1,000 simultaneous requests at 50 slots**, counting
 
 My first version double-booked. The fix is two layers: the **row lock** serialises people racing for the same slot so
 losers get a clean "slot taken", and the **partial unique index** (`WHERE status IN ('BOOKED','COMPLETED')`) is the
-database-level guarantee that holds even if application code is wrong. Details and caveats: [`loadtest/results/RESULTS.md`](loadtest/results/RESULTS.md).
+database-level guarantee that holds even if application code is wrong.
+
+I re-ran the same test against the deployed containers on the EC2 box (2 vCPU, 2 GB RAM, a separate throwaway database): **50 accepted, 950 rejected with 409, 0 double-booked slots**, and the whole k6 run took 17 seconds. Details and caveats: [`loadtest/results/RESULTS.md`](loadtest/results/RESULTS.md).
 
 ## Architecture
 
@@ -87,9 +89,9 @@ on :5432, a `clinicq` role, and the Mailpit binary; on my machine these live in 
 
 ## Known limitations (what I'd do next)
 
-- Tokens last 15 minutes and there is no refresh token; disabling a user takes effect at their next login or token expiry.
+- Tokens last 15 minutes and are renewed while the user is active (12 hour hard cap). Disabling a user takes effect at the next renewal, within 15 minutes.
 - No login rate limiting or account lockout.
 - The encryption key is one key from an environment variable. A KMS-managed key with rotation would be the real answer.
 - Reminder emails go to Mailpit locally; for real delivery configure SMTP (Amazon SES instructions in `docs/DEPLOY.md`).
-- The load test ran with client and server on one laptop, so absolute latencies are not representative of a deployed system. The double-booking counts are the point.
-- Docker images and the production compose file are written and the `prod` profile is verified, but I have not run the containers or deployed to AWS from this machine.
+- The load test client runs on the same machine as the server (laptop, then the EC2 box), so latencies are not representative of real traffic. The double-booking counts are the point.
+- The live demo is a single small instance with no backups or failover, and its reminder emails go to a mail catcher rather than real inboxes.
