@@ -39,7 +39,7 @@ export function Login() {
           ))}
         </div>
       </aside>
-      <div className="auth">
+      <main className="auth">
       <h2 style={{ marginTop: 0 }}>Sign in</h2>
       {expired && <p className="info">You were signed out after a period of inactivity. Sign in to pick up where you left off.</p>}
       <form onSubmit={submit} className="card stack">
@@ -58,7 +58,7 @@ export function Login() {
           ))}
         </div>
       </section>
-      </div>
+      </main>
     </div>
   );
 }
@@ -75,7 +75,7 @@ export function Register() {
     try { await register(f.email, f.password, f.fullName); nav('/'); } catch (err) { setError(errText(err)); } finally { setBusy(false); }
   };
   return (
-    <div className="auth">
+    <main className="auth">
       <h1>Create your account</h1>
       <form onSubmit={submit} className="card stack">
         <TextField label="Full name" value={f.fullName} onChange={(e) => setF({ ...f, fullName: e.target.value })} required maxLength={100} autoComplete="name" />
@@ -85,6 +85,6 @@ export function Register() {
         <Button variant="primary" busy={busy}>Create account</Button>
         <p className="muted">Already registered? <Link to="/login">Sign in</Link></p>
       </form>
-    </div>
+    </main>
   );
 }
