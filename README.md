@@ -3,6 +3,8 @@
 Scheduling for small clinics. Patients book appointments, staff run the day, and when someone cancels the freed slot is
 automatically offered to the next person on the waitlist.
 
+For a guided tour of this project, simple or detailed, visit my portfolio: https://kalyan-mantha.vercel.app
+
 **Stack:** React + TypeScript (Vite) · Java 21 / Spring Boot 3 · PostgreSQL 16 · JWT auth · Flyway · Docker.
 **Live demo:** https://clinicq.duckdns.org (one-click demo logins on the sign-in page). One AWS EC2 t3.small running the Docker Compose stack behind Caddy with a Let's Encrypt certificate; `docs/DEPLOY.md` is the step-by-step. For the full explanation of how everything works, read [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md).
 
