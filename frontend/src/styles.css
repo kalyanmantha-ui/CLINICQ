@@ -163,6 +163,15 @@ a.slotrow:hover { transform: translateY(-2px); border-color: var(--pine); }
   .slotrow, .queue .slotrow { grid-template-columns: 72px 1fr; } .slotrow > :last-child { grid-column: 1 / -1; }
   dl { grid-template-columns: 1fr; } .row.between { flex-wrap: wrap; }
   .day { grid-template-columns: 1fr; gap: 6px; } .appt { grid-template-columns: 54px 1fr; } .appt > :last-child { grid-column: 1 / -1; }
+  /* phone top bar: brand, name and sign out on one row, links on a single scrolling row below */
+  .topbar { gap: 4px 12px; padding: 8px 14px 4px; }
+  .topbar .brand { order: 1; }
+  .topbar .who { order: 2; flex: 1 1 0; min-width: 0; text-align: right; font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar > button { order: 3; }
+  .topbar nav { order: 4; flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; margin: 0 -14px; padding: 0 14px 4px; scrollbar-width: none; }
+  .topbar nav::-webkit-scrollbar { display: none; }
+  .topbar nav a { flex: none; padding: 10px 14px; white-space: nowrap; }
+  .row.between { gap: 8px 16px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; transition-duration: .001ms !important; } }
 
