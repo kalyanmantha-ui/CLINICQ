@@ -6,6 +6,7 @@ import { Button, Notice, TextField } from '../ui';
 
 const DEMO = [
   ['Patient', 'patient@clinicq.demo'],
+  ['Second patient', 'patient2@clinicq.demo'],
   ['Receptionist', 'reception@clinicq.demo'],
   ['Doctor', 'doctor@clinicq.demo'],
   ['Admin', 'admin@clinicq.demo'],

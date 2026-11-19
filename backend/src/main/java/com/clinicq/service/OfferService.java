@@ -97,6 +97,21 @@ public class OfferService {
                         rs.getString(4), rs.getString(5), ts(rs, "created_at")));
     }
 
+    /**
+     * A patient who books a slot with a doctor no longer needs to wait for that doctor, so their waiting entry is closed
+     * in the same transaction as the booking (no gap in which they could be offered a second slot).
+     * If they are holding an open offer from that doctor they must answer it first, so it is never left dangling.
+     */
+    public void settleWaitlist(UUID patientId, UUID doctorId) {
+        var rows = jdbc.query("select id, status from waitlist_entries where patient_id = ? and doctor_id = ? and status in ('WAITING','OFFERED') for update",
+                (rs, i) -> new Object[]{rs.getObject(1, UUID.class), rs.getString(2)}, patientId, doctorId);
+        for (Object[] r : rows) if ("OFFERED".equals(r[1])) throw new ApiException(HttpStatus.CONFLICT, "RESPOND_TO_OFFER_FIRST");
+        for (Object[] r : rows) {
+            jdbc.update("update waitlist_entries set status = 'FULFILLED' where id = ?", r[0]);
+            audit.record(patientId, Role.PATIENT.name(), "CLOSE_WAITLIST_ENTRY", "waitlist_entry", r[0].toString());
+        }
+    }
+
     // ---------- offering a freed slot ----------
 
     /**

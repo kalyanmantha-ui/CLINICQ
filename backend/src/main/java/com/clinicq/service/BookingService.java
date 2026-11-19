@@ -40,6 +40,7 @@ public class BookingService {
         if (slot.getStatus() != SlotStatus.OPEN || !slot.getStartAt().isAfter(Instant.now())) {
             throw ApiException.slotTaken();
         }
+        offers.settleWaitlist(patientId, slot.getDoctorId());   // booking satisfies a wait for this doctor
         slot.setStatus(SlotStatus.BOOKED);
         Appointment a = appts.saveAndFlush(new Appointment(slotId, patientId, idempotencyKey));
         audit.record(patientId, Role.PATIENT.name(), "BOOK_APPOINTMENT", "appointment", a.getId().toString());

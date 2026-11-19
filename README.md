@@ -67,7 +67,7 @@ cd backend  && SEED_DEMO=true mvn spring-boot:run               # API on :8080
 cd frontend && npm install && npm run dev              # http://localhost:5173
 ```
 
-Demo logins (password `Demo#2026!` for all): `patient@clinicq.demo`, `reception@clinicq.demo`, `doctor@clinicq.demo`, `admin@clinicq.demo`.
+Demo logins (password `Demo#2026!` for all): `patient@clinicq.demo`, `patient2@clinicq.demo` (a second patient, for demonstrating the waitlist), `reception@clinicq.demo`, `doctor@clinicq.demo`, `admin@clinicq.demo`.
 The login page has one-click buttons for each.
 
 ## Tests

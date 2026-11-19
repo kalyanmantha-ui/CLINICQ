@@ -69,10 +69,35 @@ const mineE = (await call('GET', '/api/appointments/mine', { token: E })).json.f
 ok('E has exactly one booked appointment', mineE.length === 1 && mineE[0].slotId === S2);
 ok('S2 is not open', !(await openIds()).includes(S2));
 
+console.log('--- scenario 3: a booking closes the waiting entry for that doctor, in the same transaction ---');
+const [F, G, H] = await Promise.all(['f', 'g', 'h'].map(patient));
+ok('F joins the waitlist', (await call('POST', '/api/waitlist', { token: F, body: { doctorId: doc } })).status === 201);
+const open3 = await openIds();
+ok('F books a slot directly -> 201', (await call('POST', '/api/appointments', { token: F, body: { slotId: open3[0] } })).status === 201);
+const entriesF = (await call('GET', '/api/waitlist/mine', { token: F })).json;
+ok("F's entry is closed (FULFILLED), not left waiting", entriesF.length === 1 && entriesF[0].status === 'FULFILLED', JSON.stringify(entriesF.map((e) => e.status)));
+const queueNow = (await call('GET', '/api/reception/waitlist', { token: recep })).json;
+ok('F no longer appears in the reception queue', !queueNow.some((q) => q.patientName === 'Test f'));
+ok('F can join the waitlist again later (e.g. to wait for something earlier)', (await call('POST', '/api/waitlist', { token: F, body: { doctorId: doc } })).status === 201);
+const entryF2 = (await call('GET', '/api/waitlist/mine', { token: F })).json.find((e) => e.status === 'WAITING');
+await call('DELETE', `/api/waitlist/${entryF2.id}`, { token: F });
+
+const open4 = await openIds();
+ok('H books a slot', (await call('POST', '/api/appointments', { token: H, body: { slotId: open4[0] } })).status === 201);
+ok('G joins the waitlist', (await call('POST', '/api/waitlist', { token: G, body: { doctorId: doc } })).status === 201);
+const apptH = (await call('GET', '/api/appointments/mine', { token: H })).json.find((a) => a.status === 'BOOKED');
+await call('DELETE', `/api/appointments/${apptH.id}`, { token: H });
+const offG = (await call('GET', '/api/offers/mine', { token: G })).json;
+ok('G is offered the freed slot', offG.length === 1 && offG[0].slotId === open4[0]);
+const other = (await openIds())[0];
+const blocked = await call('POST', '/api/appointments', { token: G, body: { slotId: other } });
+ok('G cannot book a different slot while holding an offer -> 409 RESPOND_TO_OFFER_FIRST', blocked.status === 409 && blocked.json?.error === 'RESPOND_TO_OFFER_FIRST', JSON.stringify(blocked.json));
+ok("G's offer is untouched and can still be accepted -> 201", (await call('POST', `/api/offers/${offG[0].id}/accept`, { token: G })).status === 201);
+
 console.log('--- staff + audit ---');
 ok('patient cannot see the reception queue -> 403', (await call('GET', '/api/reception/waitlist', { token: A })).status === 403);
 ok('receptionist sees the queue -> 200', (await call('GET', '/api/reception/waitlist', { token: recep })).status === 200);
 const audit = (await call('GET', '/api/admin/audit?limit=200', { token: admin })).json.map((a) => a.action);
-for (const act of ['OFFER_SLOT', 'DECLINE_OFFER', 'EXPIRE_OFFER', 'ACCEPT_OFFER', 'VIEW_WAITLIST']) ok(`audit has ${act}`, audit.includes(act));
+for (const act of ['OFFER_SLOT', 'DECLINE_OFFER', 'EXPIRE_OFFER', 'ACCEPT_OFFER', 'CLOSE_WAITLIST_ENTRY', 'VIEW_WAITLIST']) ok(`audit has ${act}`, audit.includes(act));
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASSED');
 process.exit(fails ? 1 : 0);

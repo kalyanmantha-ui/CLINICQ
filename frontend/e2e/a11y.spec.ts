@@ -37,6 +37,19 @@ test.describe('accessibility (axe, WCAG 2.1 AA)', () => {
     await scan(page, 'book: slots');
   });
 
+  test('toast messages are readable', async ({ page }) => {
+    await demo(page, 'Patient');
+    await page.getByRole('link', { name: 'My details' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByRole('status')).toBeVisible();
+    await scan(page, 'toast');
+    const { color, background } = await page.getByRole('status').evaluate((el) => {
+      const cs = getComputedStyle(el); return { color: cs.color, background: cs.backgroundColor };
+    });
+    expect(color).toBe('rgb(255, 255, 255)');
+    expect(background).not.toBe(color);
+  });
+
   test('staff schedule, calendar and list', async ({ page }) => {
     await demo(page, 'Receptionist');
     await page.getByLabel('Date').fill(tomorrow);

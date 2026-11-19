@@ -29,8 +29,10 @@ class DemoDataSeeder implements CommandLineRunner {
         users.save(new User("reception@clinicq.demo", hash, "Riley Reception", Role.RECEPTIONIST));
         User doc = users.saveAndFlush(new User("doctor@clinicq.demo", hash, "Dr. Dana Doctor", Role.DOCTOR));
         User pat = users.saveAndFlush(new User("patient@clinicq.demo", hash, "Pat Patient", Role.PATIENT));
+        User pat2 = users.saveAndFlush(new User("patient2@clinicq.demo", hash, "Quinn Queue", Role.PATIENT));
         jdbc.update("insert into doctors(user_id, specialty) values (?, 'General Practice')", doc.getId());
         jdbc.update("insert into patients(user_id) values (?)", pat.getId());
+        jdbc.update("insert into patients(user_id) values (?)", pat2.getId());
 
         ZoneId zone = ZoneId.of("America/Los_Angeles");
         LocalDate start = LocalDate.now(zone).plusDays(1);
